@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import SearchHeader from "./components/search_header/search_header";
 import VideoList from "./components/video_list/video_list";
+import styles from "./app.module.css";
 const json = {
   kind: "youtube#videoListResponse",
   etag: "QiIulEQylybh8qWkxaNI3PgUcfQ",
@@ -1404,14 +1406,27 @@ const json = {
     resultsPerPage: 25,
   },
 };
-function App(props) {
+function App({ youtube }) {
   const [videos, setVideos] = useState([]);
 
+  const search = (query) => {
+    youtube
+      .search(query) //
+      .then((videos) => setVideos(videos));
+  };
+
   useEffect(() => {
-    setVideos(json.items);
+    youtube
+      .mostPopular() //
+      .then((videos) => setVideos(videos));
   }, []);
 
-  return <VideoList videos={videos} />;
+  return (
+    <div className={styles.app}>
+      <SearchHeader onSearch={search} />
+      <VideoList videos={videos} />;
+    </div>
+  );
 }
 
 export default App;
